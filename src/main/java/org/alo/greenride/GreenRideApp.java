@@ -1,7 +1,9 @@
 package org.alo.greenride;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Startet die Stationsuebersicht und fuehrt die Anforderungen
@@ -28,6 +30,12 @@ public class GreenRideApp {
         kottbusser.fahrradAufnehmen(f4);
         kottbusser.fahrradAufnehmen(f5);
 
+        System.out.println("SIZE OF FINDEFAHRRAEDERNACHMODELL CITY 3");
+        System.out.println(kottbusser.findeFahrraederNachModell("City 3").size());
+
+        System.out.println("SIZE OF FINDEFAHRRAEDERNACHMODELL E-Bike");
+        System.out.println(warschauer.findeFahrraederNachModell("E-Bike").size());
+
         f3.wartungHinzufuegen("14.09.2026", "Bremse nachgestellt");
         f3.wartungHinzufuegen("28.09.2026", "Kette geoelt");
 
@@ -47,11 +55,15 @@ public class GreenRideApp {
         System.out.println();
 
         // --- A5: Fahrrad ueber die Kennung finden ---------------------
-        Fahrrad gefunden = warschauer.findeFahrrad("GR-002");
-        System.out.println("Gesucht GR-002, gefunden: " + gefunden.getModell());
+        Optional<Fahrrad> gefunden = warschauer.findeFahrrad("GR-002");
+        if (gefunden.isPresent()) {
+            System.out.println("Gesucht GR-002, gefunden: " + gefunden.get().getModell());
+        }
 
-        Fahrrad fehlt = warschauer.findeFahrrad("GR-999");
-        System.out.println("Gesucht GR-999, gefunden: " + fehlt);
+        Optional<Fahrrad> fehlt = warschauer.findeFahrrad("GR-999");
+        if (fehlt.isPresent()) {
+            System.out.println("Gesucht GR-999, gefunden: " + fehlt);
+        }
         System.out.println();
 
         // --- K2: ueber alle Stationen ---------------------------------
@@ -59,19 +71,29 @@ public class GreenRideApp {
         stationen.add(warschauer);
         stationen.add(kottbusser);
 
-        Fahrrad ueberall = sucheUeberall(stationen, "GR-020");
-        System.out.println("sucheUeberall(\"GR-020\") -> "
-                + ueberall.getModell() + " @ " + ueberall.getStation().getName());
+        Optional<Fahrrad> ueberall = sucheUeberall(stationen, "GR-020");
+        if (ueberall.isPresent()) {
+            System.out.println("sucheUeberall(\"GR-020\") -> "
+                    + ueberall.get().getModell() + " @ " + ueberall.get().getStation().getName());
+        }
     }
 
-    /** Sucht ein Fahrrad an allen uebergebenen Stationen. */
-    static Fahrrad sucheUeberall(List<Station> stationen, String kennung) {
+
+    /**
+     * @param stationen findet die Station des Fahrrads
+     * @param kennung findet die Nummer des Fahrrads
+     *
+     * @return Optional<Fahrrad>
+     *
+     *
+     * */
+    static Optional<Fahrrad> sucheUeberall(List<Station> stationen, String kennung) {
         for (Station s : stationen) {
-            Fahrrad f = s.findeFahrrad(kennung);
-            if (f != null) {
+            Optional<Fahrrad> f = s.findeFahrrad(kennung);
+            if(f.isPresent()){
                 return f;
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

@@ -1,5 +1,6 @@
 package org.alo.greenride;
 
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,14 +37,36 @@ public class Station {
         }
     }
 
-    /** Sucht ein Fahrrad anhand seiner Kennung. */
-    public Fahrrad findeFahrrad(String kennung) {
+    /**
+     * @param kennung findet das Fahrrad anhand der kennung
+     *
+     * @return optional das Fahrrad oder null
+     *
+     * @throws IllegalArgumentException gibt Optional.empty zurrück
+     * */
+    public Optional<Fahrrad> findeFahrrad(String kennung) {
         for (Fahrrad f : fahrraeder) {
             if (f.getKennung().equals(kennung)) {
-                return f;
+                return Optional.of(f);   //gibt Fahrradkennung zurück
             }
         }
-        return null;
+        return Optional.empty();    //gibt NULL zurück
+    }
+
+
+    /**
+     *
+     * @param modell
+     * @return ein List von typ Fahrrad
+     */
+    public List<Fahrrad> findeFahrraederNachModell(String modell) {
+        List<Fahrrad> gefunden = new ArrayList<>();
+        for (Fahrrad f : fahrraeder) {
+            if (f.getModell().equals(modell)) {
+                gefunden.add(f);
+            }
+        }
+        return gefunden;
     }
 
     public String getName()    { return name; }
